@@ -1,0 +1,201 @@
+var _user$project$HW1$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('hits:'),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$Basics$fst(
+								_elm_lang$core$Basics$fst(model))))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('misses:'),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$Basics$fst(
+								_elm_lang$core$Basics$snd(model))))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('points:'),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$Basics$snd(
+								_elm_lang$core$Basics$snd(model))))
+					]))
+			]));
+};
+var _user$project$HW1$upstate = F2(
+	function (point, state) {
+		var misses = _elm_lang$core$Basics$snd(state);
+		var missesCounter = _elm_lang$core$Basics$fst(misses);
+		var missesList = _elm_lang$core$Basics$snd(misses);
+		var hits = _elm_lang$core$Basics$fst(state);
+		var hitsCounter = _elm_lang$core$Basics$fst(hits);
+		var hitsList = _elm_lang$core$Basics$snd(hits);
+		return _elm_lang$core$Native_Utils.eq(
+			point,
+			{x: 0, y: 0}) ? {
+			ctor: '_Tuple2',
+			_0: {
+				ctor: '_Tuple2',
+				_0: hitsCounter + 1,
+				_1: A2(
+					_elm_lang$core$Basics_ops['++'],
+					hitsList,
+					_elm_lang$core$Native_List.fromArray(
+						[point]))
+			},
+			_1: misses
+		} : {
+			ctor: '_Tuple2',
+			_0: hits,
+			_1: {
+				ctor: '_Tuple2',
+				_0: missesCounter + 1,
+				_1: A2(
+					_elm_lang$core$Basics_ops['++'],
+					missesList,
+					_elm_lang$core$Native_List.fromArray(
+						[point]))
+			}
+		};
+	});
+var _user$project$HW1$initialModel = {
+	ctor: '_Tuple2',
+	_0: {
+		ctor: '_Tuple2',
+		_0: 0,
+		_1: _elm_lang$core$Native_List.fromArray(
+			[])
+	},
+	_1: {
+		ctor: '_Tuple2',
+		_0: 0,
+		_1: _elm_lang$core$Native_List.fromArray(
+			[])
+	}
+};
+var _user$project$HW1$init = {ctor: '_Tuple2', _0: _user$project$HW1$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$HW1$take = F2(
+	function ($int, list) {
+		var listResult = _elm_lang$core$Result$Ok(list);
+		var intResult = (_elm_lang$core$Native_Utils.cmp($int, 0) < 0) ? _elm_lang$core$Result$Err('negative index') : ((_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$List$length(list),
+			$int) < 0) ? _elm_lang$core$Result$Err('not enough elements') : _elm_lang$core$Result$Ok($int));
+		return A3(_elm_lang$core$Result$map2, _elm_lang$core$List$take, intResult, listResult);
+	});
+var _user$project$HW1$getDigits = F2(
+	function (length, $int) {
+		var list = A2(_elm_lang$core$List$repeat, length, $int);
+		return _elm_lang$core$List$reverse(
+			A2(
+				_elm_lang$core$List$indexedMap,
+				F2(
+					function (index, $int) {
+						return A2(
+							_elm_lang$core$Basics_ops['%'],
+							($int / Math.pow(10, index)) | 0,
+							10);
+					}),
+				list));
+	});
+var _user$project$HW1$lengthOfPositiveInt = function ($int) {
+	return _elm_lang$core$String$length(
+		_elm_lang$core$Basics$toString($int));
+};
+var _user$project$HW1$digitsOfInt = function ($int) {
+	if (_elm_lang$core$Native_Utils.cmp($int, 0) > 0) {
+		var length = _user$project$HW1$lengthOfPositiveInt($int);
+		return A2(_user$project$HW1$getDigits, length, $int);
+	} else {
+		if (_elm_lang$core$Native_Utils.eq($int, 0)) {
+			return _elm_lang$core$Native_List.fromArray(
+				[0]);
+		} else {
+			return _elm_lang$core$Native_List.fromArray(
+				[]);
+		}
+	}
+};
+var _user$project$HW1$rooter = F2(
+	function ($int, count) {
+		rooter:
+		while (true) {
+			var digits = _user$project$HW1$digitsOfInt($int);
+			var _p0 = _user$project$HW1$lengthOfPositiveInt($int);
+			if (_p0 === 1) {
+				return {ctor: '_Tuple2', _0: $int, _1: count};
+			} else {
+				var _v1 = _elm_lang$core$List$sum(digits),
+					_v2 = count + 1;
+				$int = _v1;
+				count = _v2;
+				continue rooter;
+			}
+		}
+	});
+var _user$project$HW1$additivePersistence = function ($int) {
+	return _elm_lang$core$Basics$snd(
+		A2(_user$project$HW1$rooter, $int, 0));
+};
+var _user$project$HW1$digitalRoot = function ($int) {
+	return _elm_lang$core$Basics$fst(
+		A2(_user$project$HW1$rooter, $int, 0));
+};
+var _user$project$HW1$Point = F2(
+	function (a, b) {
+		return {x: a, y: b};
+	});
+var _user$project$HW1$NewPoint = function (a) {
+	return {ctor: 'NewPoint', _0: a};
+};
+var _user$project$HW1$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		if (_p1.ctor === 'GenPoint') {
+			return {
+				ctor: '_Tuple2',
+				_0: model,
+				_1: A2(
+					_elm_lang$core$Random$generate,
+					_user$project$HW1$NewPoint,
+					A2(
+						_elm_lang$core$Random$pair,
+						A2(_elm_lang$core$Random$float, -10, 10),
+						A2(_elm_lang$core$Random$float, -10, 10)))
+			};
+		} else {
+			var point = A2(_user$project$HW1$Point, _p1._0._0, _p1._0._1);
+			var newModel = A2(_user$project$HW1$upstate, point, model);
+			return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$HW1$GenPoint = function (a) {
+	return {ctor: 'GenPoint', _0: a};
+};
+var _user$project$HW1$subscriptions = function (model) {
+	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$HW1$GenPoint);
+};
+var _user$project$HW1$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$HW1$init, update: _user$project$HW1$update, subscriptions: _user$project$HW1$subscriptions, view: _user$project$HW1$view})
+};
