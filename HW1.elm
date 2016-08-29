@@ -5,6 +5,11 @@ import Html.App
 import Html
 import Random
 import Time
+--import Svg
+--import Svg.Attributes
+import Collage
+import Element
+import Color
 
 digitsOfInt : Int -> List(Int)
 digitsOfInt int =
@@ -130,11 +135,14 @@ upstate point state =
     missesList = snd misses
 
   in
-    if point == {x = 0, y = 0} then
+    if (inCircle point) then
       ((hitsCounter + 1, hitsList ++ [point]), misses)
     else
       (hits, (missesCounter + 1, missesList ++ [point]))
 
+inCircle : Point -> Bool
+inCircle point =
+  (point.x^2) + (point.y^2) < 100^2
 
 type Msg
   = GenPoint Time.Time
@@ -144,7 +152,7 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     GenPoint newTime ->
-      (model, Random.generate NewPoint (Random.pair (Random.float -10 10) (Random.float -10 10)))
+      (model, Random.generate NewPoint (Random.pair (Random.float -100 100) (Random.float -100 100)))
 
     NewPoint (x, y) ->
       let
@@ -159,7 +167,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every Time.second GenPoint
+  Time.every Time.millisecond GenPoint
 
 view : Model -> Html.Html msg
 view model =
@@ -172,7 +180,37 @@ view model =
     [ Html.text "misses:"
     , Html.text (toString (fst (snd model)))]
     , Html.div []
-    [ Html.text "points:"
-    , Html.text (toString (snd (snd model)))]
+    [ Html.text "pi estimate:"
+    , Html.text (toString (estimatePi model))]
+    , Html.div []
+    [ render model ]
   ]
+
+pointsToCircles : Model -> List Collage.Form
+pointsToCircles model =
+  (List.map (\point -> (Collage.move (point.x, point.y) (Collage.filled Color.red (Collage.circle 5.0)))) (snd (snd model))) ++ (List.map (\point -> (Collage.move (point.x, point.y) (Collage.filled Color.green (Collage.circle 5.0)))) (snd (fst model)))
+
+outlineCircle =
+  Collage.outlined Collage.defaultLine (Collage.circle 100)
+
+outlineSquare =
+  Collage.outlined Collage.defaultLine (Collage.square 200)
+
+render : Model -> Html.Html msg
+render model =
+  Element.toHtml (Collage.collage 500 500 ((pointsToCircles model) ++ [outlineCircle] ++ [outlineSquare]))
+
+estimatePi : Model -> Float
+estimatePi model =
+  let
+    hits =
+      (toFloat (fst (fst model)))
+
+    misses =
+      (toFloat (fst (snd model)))
+
+    total =
+      hits + misses
+  in
+    (hits / total) * 4
 
